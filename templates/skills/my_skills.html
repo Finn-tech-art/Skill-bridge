@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}My Skills - SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <h2>My Skills</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSkillModal">+ Add Skill</button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="mb-3">Skills I Offer</h4>
+            {% if offered_skills %}
+                {% for skill in offered_skills %}
+                    <div class="card skill-card offer mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ skill['skill_name'] }}</h6>
+                            <p class="card-text text-muted small">{{ skill['description'][:100] }}...</p>
+                            <span class="badge badge-tech">{{ skill['category'] }}</span>
+                            <form method="POST" action="/skills/delete/{{ skill['skill_id'] }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger mt-2">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">You haven't listed any skills to offer yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <h4 class="mb-3">Skills I Want to Learn</h4>
+            {% if wanted_skills %}
+                {% for skill in wanted_skills %}
+                    <div class="card skill-card want mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ skill['skill_name'] }}</h6>
+                            <p class="card-text text-muted small">{{ skill['description'][:100] }}...</p>
+                            <span class="badge badge-tech">{{ skill['category'] }}</span>
+                            <button class="btn btn-sm btn-info mt-2">Find Matches</button>
+                            <form method="POST" action="/skills/delete/{{ skill['skill_id'] }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger mt-2">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">You haven't listed any skills you want to learn yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add a Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="/skills/add">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="skill_name" class="form-label">Skill Name</label>
+                        <input type="text" class="form-control" id="skill_name" name="skill_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Select category...</option>
+                            <option value="Tech">Tech</option>
+                            <option value="Creative">Creative</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Language">Language</option>
+                            <option value="Music">Music</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (max 200 chars)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" maxlength="200"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Skill Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="offer" name="skill_type" value="offer" required>
+                            <label class="form-check-label" for="offer">I can teach this</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="want" name="skill_type" value="want" required>
+                            <label class="form-check-label" for="want">I want to learn this</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

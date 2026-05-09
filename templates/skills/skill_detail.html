@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Skill Details - SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            {% if skill %}
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ skill['skill_name'] }}</h2>
+                        <p class="text-muted">Offered by <strong>{{ skill['alias'] }}</strong></p>
+                        <p class="lead">{{ skill['description'] }}</p>
+                        
+                        <div class="mb-3">
+                            <span class="badge badge-lg badge-tech">{{ skill['category'] }}</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p><small><strong>Reputation Score:</strong> <span class="star-rating">★ {{ skill['reputation_score'] }}</span></small></p>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-lg">Request Session</button>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-danger">Skill not found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

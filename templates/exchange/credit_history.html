@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Credit History - SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Credit Transaction History</h2>
+    
+    <div class="table-responsive mt-4">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Session</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-muted">No transactions yet</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

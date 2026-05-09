@@ -1,0 +1,199 @@
+/* SkillBridge Custom Styles */
+
+:root {
+    --primary-color: #003366;
+    --secondary-color: #0099cc;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+}
+
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Badge Styling by Category */
+.badge-tech {
+    background-color: #0099cc;
+}
+
+.badge-creative {
+    background-color: #9966cc;
+}
+
+.badge-academic {
+    background-color: #28a745;
+}
+
+.badge-language {
+    background-color: #ff9933;
+}
+
+.badge-music {
+    background-color: #ff6666;
+}
+
+.badge-other {
+    background-color: #666666;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 153, 204, 0.25);
+}
+
+/* Modal */
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+/* Skill Cards */
+.skill-card {
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: border-left-color 0.3s;
+}
+
+.skill-card.offer {
+    border-left-color: #28a745;
+}
+
+.skill-card.want {
+    border-left-color: #ffc107;
+}
+
+.skill-card:hover {
+    border-left-color: var(--secondary-color);
+}
+
+/* Star Rating */
+.star-rating {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+/* Credit Balance Widget */
+.credit-widget {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.credit-balance {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Reputation Widget */
+.reputation-widget {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.reputation-score {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Session Status Badges */
+.badge-status-pending {
+    background-color: #ffc107;
+    color: black;
+}
+
+.badge-status-confirmed {
+    background-color: #0099cc;
+}
+
+.badge-status-completed {
+    background-color: #28a745;
+}
+
+.badge-status-cancelled {
+    background-color: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .credit-widget,
+    .reputation-widget {
+        margin-bottom: 20px;
+    }
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tables */
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
