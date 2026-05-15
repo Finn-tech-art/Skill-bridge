@@ -56,3 +56,4 @@ Thumbs.db
 
 # Session files
 flask_session/
+scripts/generate_implementation_story_docx.py
