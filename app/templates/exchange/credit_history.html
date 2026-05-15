@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Credit ledger</p>
+        <h1>See how each completed session affects your balance.</h1>
+        <p>Time-credit sessions debit the requester and reward the provider only after both sides confirm completion.</p>
+    </div>
+</section>
+
+<section class="content-card">
+    <div class="table-shell">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Balance after</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.created_at[:10] }}</td>
+                        <td>{{ transaction.transaction_type | title }}</td>
+                        <td class="{{ 'negative' if transaction.amount < 0 else 'positive' }}">
+                            {{ "%+.2f"|format(transaction.amount) }}
+                        </td>
+                        <td>{{ "%.2f"|format(transaction.balance_after) }}</td>
+                        <td>{{ transaction.reference_note or "Session update" }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-table">No credit transactions yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Profile</p>
+        <h1>Shape how other students discover and trust you.</h1>
+        <p>Your profile feeds the match engine and helps peers understand what you can teach, what you want to learn, and how far along you are.</p>
+    </div>
+
+    <div class="hero-metrics">
+        <div class="metric-tile">
+            <span>{{ user.credit_balance }}</span>
+            <small>current credit balance</small>
+        </div>
+        <div class="metric-tile">
+            <span>{{ user.reputation_score or "New" }}</span>
+            <small>reputation score</small>
+        </div>
+        <div class="metric-tile">
+            <span>@{{ user.username }}</span>
+            <small>public username</small>
+        </div>
+    </div>
+</section>
+
+<section class="content-card auth-card--wide">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Identity</p>
+            <h2>Edit profile</h2>
+        </div>
+    </div>
+
+    <form class="stack-form" method="POST" action="{{ url_for('auth.edit_profile') }}">
+        <div class="form-grid">
+            <label>
+                <span>Full name</span>
+                <input type="text" name="full_name" value="{{ user.full_name }}" required>
+            </label>
+            <label>
+                <span>Email</span>
+                <input type="email" value="{{ user.email }}" disabled>
+            </label>
+            <label>
+                <span>Department</span>
+                <input type="text" name="department" value="{{ user.department or '' }}" placeholder="Computer Science">
+            </label>
+            <label>
+                <span>Year of study</span>
+                <select name="year_of_study">
+                    <option value="">Select year</option>
+                    <option value="1" {% if user.year_of_study == 1 %}selected{% endif %}>Year 1</option>
+                    <option value="2" {% if user.year_of_study == 2 %}selected{% endif %}>Year 2</option>
+                    <option value="3" {% if user.year_of_study == 3 %}selected{% endif %}>Year 3</option>
+                    <option value="4" {% if user.year_of_study == 4 %}selected{% endif %}>Year 4</option>
+                    <option value="5" {% if user.year_of_study == 5 %}selected{% endif %}>Year 5+</option>
+                </select>
+            </label>
+        </div>
+
+        <label>
+            <span>Bio</span>
+            <textarea name="bio" rows="5" placeholder="Share what you enjoy teaching and what kind of exchanges you prefer.">{{ user.bio or '' }}</textarea>
+        </label>
+
+        <button class="btn" type="submit">Save changes</button>
+    </form>
+</section>
+{% endblock %}

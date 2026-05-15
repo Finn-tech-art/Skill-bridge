@@ -1,0 +1,105 @@
+<article class="content-card match-card">
+    <div class="match-card__top">
+        <div>
+            <p class="eyebrow">Recommended connection</p>
+            <h3>{{ match.provider.full_name }}</h3>
+            <p class="muted">@{{ match.provider.username }}{% if match.provider.department %} · {{ match.provider.department }}{% endif %}</p>
+        </div>
+        <div class="score-badge">
+            <span>{{ match.score }}</span>
+            <small>score</small>
+        </div>
+    </div>
+
+    <div class="match-card__insights">
+        <div class="insight-box">
+            <strong>{{ match.matched_skills | length }}</strong>
+            <span>skills they can teach you</span>
+        </div>
+        <div class="insight-box">
+            <strong>{{ match.reciprocal_skills | length }}</strong>
+            <span>skills you can offer back</span>
+        </div>
+        <div class="insight-box">
+            <strong>{{ match.provider_reputation or "New" }}</strong>
+            <span>reputation</span>
+        </div>
+    </div>
+
+    <div class="match-section">
+        <p class="section-label">Best matched wants</p>
+        <div class="tag-row">
+            {% for skill in match.matched_skills %}
+                <span class="tag">{{ skill.skill_name }} · {{ skill.proficiency_level | title }}</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if match.reciprocal_skills %}
+        <div class="match-section">
+            <p class="section-label">Reciprocal swap potential</p>
+            <div class="tag-row">
+                {% for skill in match.reciprocal_skills %}
+                    <span class="tag tag-accent">{{ skill.skill_name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <form class="request-form" method="POST" action="{{ url_for('exchange.create_exchange', provider_id=match.provider.id) }}">
+        <div class="form-grid">
+            <label>
+                <span>Skill you want from {{ match.provider.full_name.split(' ')[0] }}</span>
+                <select name="provider_skill_id" required>
+                    <option value="">Choose a skill</option>
+                    {% for skill in match.matched_skills %}
+                        <option value="{{ skill.skill_id }}">{{ skill.skill_name }} · {{ skill.proficiency_level | title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                <span>Exchange model</span>
+                <select name="exchange_type" data-exchange-type-select>
+                    <option value="{{ match.recommended_exchange_type }}">
+                        {{ match.recommended_exchange_type | replace("_", " ") | title }} (recommended)
+                    </option>
+                    {% if match.recommended_exchange_type != "direct_swap" and match.reciprocal_skills %}
+                        <option value="direct_swap">Direct Swap</option>
+                    {% endif %}
+                    {% if match.recommended_exchange_type != "time_credit" %}
+                        <option value="time_credit">Time Credit</option>
+                    {% else %}
+                        <option value="direct_swap" {% if not match.reciprocal_skills %}disabled{% endif %}>Direct Swap</option>
+                    {% endif %}
+                </select>
+            </label>
+
+            <label data-direct-swap-field {% if match.recommended_exchange_type != "direct_swap" %}hidden{% endif %}>
+                <span>Skill you can offer back</span>
+                <select name="requester_skill_id">
+                    <option value="">Choose one of your skills</option>
+                    {% for skill in match.reciprocal_skills %}
+                        <option value="{{ skill.skill_id }}">{{ skill.skill_name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                <span>Expected duration</span>
+                <select name="duration_minutes">
+                    <option value="45">45 minutes</option>
+                    <option value="60" selected>60 minutes</option>
+                    <option value="90">90 minutes</option>
+                </select>
+            </label>
+        </div>
+
+        <label>
+            <span>Request note</span>
+            <textarea name="requester_notes" rows="3" placeholder="Share your learning goal, preferred schedule, or context."></textarea>
+        </label>
+
+        <button class="btn" type="submit">Send exchange request</button>
+    </form>
+</article>

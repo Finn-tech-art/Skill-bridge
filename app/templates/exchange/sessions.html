@@ -1,0 +1,24 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<section class="hero-card sessions-hero">
+    <div>
+        <p class="eyebrow">Session lifecycle</p>
+        <h1>Move each exchange from request to trust-building completion.</h1>
+        <p>Accept incoming requests, confirm completed meetings from both sides, and leave feedback once the session closes.</p>
+    </div>
+</section>
+
+<section class="stack-list">
+    {% for session in sessions %}
+        {% include "components/session_card.html" %}
+    {% else %}
+        <article class="content-card empty-state">
+            <h3>No sessions yet</h3>
+            <p>Your accepted and pending exchanges will show up here with the next action each side needs to take.</p>
+        </article>
+    {% endfor %}
+</section>
+
+{% endblock %}

@@ -1,270 +1,116 @@
 # SkillBridge
 
-A web-based peer-to-peer skill exchange platform for university students. SkillBridge enables students to share their skills, find skill matches, and exchange knowledge through a hybrid credit-based and direct-swap system.
+SkillBridge is a Flask + Supabase web app for peer-to-peer skill exchange. Students create profiles, list skills they can teach, add skills they want to learn, discover ranked matches, request exchange sessions, and settle time-credit exchanges after both sides confirm completion.
 
-## Project Overview
+## Current Stack
+- Flask
+- Jinja templates
+- Flask-Login
+- Supabase Auth
+- Supabase Postgres
+- Gunicorn
+- Render
 
-**SkillBridge** is a 12-week Agile project developed by **BIT 2221 Group 5** at **Multimedia University of Kenya**.
+## Core Features
+- Email/password signup and login through Supabase Auth
+- Local student profiles linked to Supabase auth identities
+- Skill offers and learning goals
+- Weighted match recommendations
+- Exchange request lifecycle
+- Credit ledger with welcome credits and session settlement
+- Review flow for completed sessions
 
-### Core Features
-- **User Authentication**: Secure registration and login with hashed passwords
-- **Skill Listing**: Post skills you can teach (offer) and skills you want to learn (want)
-- **Skill Matching**: Intelligent matching engine that ranks candidates by category match, skill relevance, and reputation
-- **Hybrid Exchange Model**: Exchange skills via time credits or direct skill swaps
-- **Feedback & Rating**: Rate peers after completed sessions with 1–5 star reviews
-- **Dashboard**: Track credit balance, reputation score, active sessions, and top matches
-- **Session Management**: Request, confirm, and complete skill exchange sessions
+## Local Setup
 
-## Tech Stack
-
-- **Backend**: Python 3.10+, Flask 2.3.3
-- **Database**: MySQL 8.x on Aiven Cloud (free tier available)
-- **Frontend**: HTML5, Bootstrap 5, JavaScript
-- **Hosting**: Aiven (MySQL), Aiven or Railway.app (Flask backend)
-- **Version Control**: Git / GitHub
-- **Testing**: pytest, pytest-cov
-- **Code Quality**: Flake8, Black
-
-## Project Structure
-
-```
-src/
-├── app/                    # Flask application modules
-│   ├── __init__.py        # App factory
-│   ├── auth.py            # Authentication & user management
-│   ├── skills.py          # Skill listing & browsing
-│   ├── exchange.py        # Session & credit management
-│   └── feedback.py        # Reviews & reputation
-├── db/                     # Database
-│   └── schema.sql         # MySQL schema & seed data
-├── static/                 # Static files
-│   ├── css/               # Stylesheets
-│   └── js/                # JavaScript
-├── templates/              # Jinja2 HTML templates
-│   ├── base.html          # Base template
-│   ├── auth/              # Authentication pages
-│   ├── skills/            # Skill pages
-│   ├── exchange/          # Session pages
-│   └── feedback/          # Review pages
-├── tests/                  # Test suite
-│   ├── __init__.py
-│   └── test_auth.py       # Authentication tests
-├── config.py              # Configuration
-├── run.py                 # Entry point
-├── requirements.txt       # Python dependencies
-└── README.md             # This file
-```
-
-## Getting Started
-
-### Prerequisites
-- Python 3.10+
-- Aiven Cloud MySQL database (free tier available)
-- pip
-- Git
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repo-url>
-   cd src
-   ```
-
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # macOS/Linux
-   # or
-   venv\Scripts\activate  # Windows
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up Aiven Cloud MySQL Database**
-   
-   For detailed step-by-step instructions, see [AIVEN_SETUP.md](AIVEN_SETUP.md).
-   
-   **Quick Summary:**
-   - Sign up at [aiven.io](https://console.aiven.io) (free tier available)
-   - Create a MySQL service
-   - Note the connection details (host, port, username, password)
-   - These will be used in Step 5
-
-5. **Set up environment configuration**
-   
-   - Copy `.env.example` to `.env`:
-     ```bash
-     cp .env.example .env
-     ```
-   
-   - Edit `.env` with your Aiven credentials:
-     ```
-     SECRET_KEY=your-very-secret-key-at-least-32-chars
-     MYSQL_HOST=mysql.c.skillbridge.aivencloud.com
-     MYSQL_USER=avnadmin
-     MYSQL_PASSWORD=your-aiven-password
-     MYSQL_DB=defaultdb
-     MYSQL_PORT=21513
-     MYSQL_USE_SSL=true
-     FLASK_ENV=development
-     FLASK_DEBUG=1
-     ```
-
-6. **Download SSL Certificate (Optional but Recommended)**
-   
-   For secure connections to Aiven:
-   ```bash
-   # Download from Aiven console or use:
-   openssl s_client -connect mysql.c.skillbridge.aivencloud.com:21513 -showcerts </dev/null 2>/dev/null | openssl x509 -outform PEM > ca.pem
-   ```
-
-7. **Initialize the database**
-   
-   ```bash
-   # Option A: Using mysql client
-   mysql -h mysql.c.skillbridge.aivencloud.com -P 21513 -u avnadmin -p < db/schema.sql
-   
-   # Option B: Using Python script (coming in Sprint 1)
-   python scripts/init_db.py
-   ```
-
-8. **Run the application**
-   ```bash
-   python run.py
-   ```
-   
-   Visit `http://localhost:5000` in your browser.
-
-### Running Tests
-
+### 1. Create a virtual environment
 ```bash
-pytest
-# With coverage
-pytest --cov=app tests/
+python -m venv .venv
 ```
 
-## Aiven Cloud Database Management
-
-### Accessing Your Database
-
-**From Command Line:**
+### 2. Activate it
+Windows:
 ```bash
-# Using mysql client
-mysql -h mysql.c.skillbridge.aivencloud.com -P 21513 -u avnadmin -p defaultdb
-
-# List all tables
-SHOW TABLES;
-
-# Check current connections
-SHOW PROCESSLIST;
+.venv\Scripts\activate
 ```
 
-**From Aiven Console:**
-- Log in to [console.aiven.io](https://console.aiven.io)
-- Navigate to your MySQL service
-- Use the **Databases** tab to manage databases
-- Use the **Users** tab to reset passwords or add users
-- View **Connection Info** for connection parameters
-
-### Backing Up Data
-
+macOS/Linux:
 ```bash
-# Full database dump
-mysqldump -h mysql.c.skillbridge.aivencloud.com -P 21513 -u avnadmin -p defaultdb > backup.sql
-
-# Restore from backup
-mysql -h mysql.c.skillbridge.aivencloud.com -P 21513 -u avnadmin -p defaultdb < backup.sql
+source .venv/bin/activate
 ```
 
-### Monitoring
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-- **Connection Limits**: Aiven free tier: 20 concurrent connections
-- **Storage**: Free tier: 20 GB
-- **Backups**: Aiven automatically backs up to 7 days
-- **Metrics**: View in Aiven console under **Metrics** tab
+### 4. Configure environment variables
+Copy `.env.example` to `.env` and set:
 
-## API Routes
+```env
+SECRET_KEY=replace-with-a-long-random-secret
+FLASK_ENV=development
+FLASK_DEBUG=1
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_KEY=your-supabase-anon-or-publishable-key
+APP_BASE_URL=http://127.0.0.1:5000
+```
 
-### Authentication
-- `GET /auth/register` - Show registration form
-- `POST /auth/register` - Submit registration
-- `GET /auth/login` - Show login form
-- `POST /auth/login` - Submit login
-- `GET /auth/logout` - Logout
-- `GET /auth/profile` - View profile
-- `POST /auth/profile/edit` - Edit profile
+### 5. Apply the auth migration in Supabase
+Run [scripts/supabase_auth_migration.sql](/D:/APPS/Skill-bridge/scripts/supabase_auth_migration.sql) in the Supabase SQL editor.
 
-### Skills
-- `GET /skills/my` - List your skills
-- `POST /skills/add` - Add a skill
-- `POST /skills/delete/<id>` - Delete a skill
-- `GET /skills/browse` - Browse all skills
-- `GET /skills/<id>` - View skill detail
+### 6. Run the app
+```bash
+python run.py
+```
 
-### Exchange (Sprint 3+)
-- `GET /exchange/sessions` - View your sessions
-- `GET /exchange/credits/history` - View credit history
+Visit `http://127.0.0.1:5000`.
 
-### Feedback (Sprint 4+)
-- `GET /feedback/reviews` - View reviews received
+## Supabase Setup
 
-## Development Workflow
+In the Supabase dashboard:
+1. Enable the `Email` auth provider.
+2. Set your local dev redirect target, for example `http://127.0.0.1:5000`.
+3. Configure your production Render URL later after deployment.
+4. Ensure the `users` table has the `auth_user_id` column from the migration script.
 
-1. Create a feature branch: `git checkout -b feature/task-name`
-2. Make changes and test locally
-3. Commit with descriptive messages: `git commit -m "Add feature description"`
-4. Push to GitHub: `git push origin feature/task-name`
-5. Create a Pull Request for review
-6. Merge after approval
+## Render Deployment
 
-## Team Roles
+This repo is prepared for Render with:
+- [render.yaml](/D:/APPS/Skill-bridge/render.yaml)
+- [Procfile](/D:/APPS/Skill-bridge/Procfile)
+- health check at `/healthz`
+- Gunicorn entrypoint `run:app`
 
-- **DB & Backend Leads** (2): Schema design, matching engine, credit system
-- **Backend Developers** (3): Auth, skills, exchange, feedback routes
-- **Frontend Developers** (3): Templates, UI, forms, dashboard
-- **QA / Tester** (1): Testing, usability studies, documentation
-- **PM / Documentation** (1): GitHub management, coordination, reports
+### Render environment variables
+Set these in Render:
+- `SECRET_KEY`
+- `SUPABASE_URL`
+- `SUPABASE_KEY`
+- `FLASK_ENV=production`
+- `FLASK_DEBUG=0`
 
-## Definition of Done
+### Deploy flow
+1. Push this repo to GitHub.
+2. Create a new Render Web Service from the repo.
+3. Let Render use `render.yaml` or set:
+   - Build command: `pip install -r requirements.txt`
+   - Start command: `gunicorn run:app`
+4. Add the environment variables above.
+5. After the service is live, set the Render domain in Supabase Auth redirect settings.
 
-A task is "Done" when:
-1. Code is committed and Pull Request is approved
-2. Feature works in a fresh browser session
-3. No hardcoded credentials or debug statements remain
-4. Updated routes appear in API documentation
-5. Database schema.sql is updated if needed
-6. All tests pass
+## Testing
+```bash
+.venv\Scripts\python.exe -m pytest
+```
 
-## Sprint Timeline
+## Project Files
+- [architecture.md](/D:/APPS/Skill-bridge/architecture.md)
+- [security.md](/D:/APPS/Skill-bridge/security.md)
+- [db/schema.sql](/D:/APPS/Skill-bridge/db/schema.sql)
+- [scripts/supabase_auth_migration.sql](/D:/APPS/Skill-bridge/scripts/supabase_auth_migration.sql)
 
-| Sprint | Weeks | Focus |
-|--------|-------|-------|
-| Sprint 0 | W1–W2 | Foundation & setup |
-| Sprint 1 | W3–W4 | Authentication |
-| Sprint 2 | W5–W6 | Skill listing & browse |
-| Sprint 3 | W7–W8 | Matching & exchange |
-| Sprint 4 | W9–W10 | Feedback & dashboard |
-| Sprint 5 | W11–W12 | Testing & submission |
-
-## Documentation
-
-- Project proposal: See `.../docs/BIT 2221 GROUP 5 Main Proposal.docx`
-- Wireframes: `/docs/wireframes.md` (to be added)
-- API documentation: `/docs/API.md` (to be added)
-
-## Support
-
-For questions or issues, contact the PM or raise an issue on GitHub.
-
-## License
-
-This project is for educational purposes as part of the BIT 2221 course at Multimedia University of Kenya.
-
----
-
-**Last Updated**: May 2024  
-**Version**: 1.0.0 (Sprint 0 - Foundation)
+## Next Recommended Improvements
+1. Add CSRF protection.
+2. Add Supabase RLS policies and document them.
+3. Add route-level tests for the new auth and skill-management flows.
+4. Add a Render deployment checklist for post-deploy verification.

@@ -1,187 +1,94 @@
-"""
-Skills module for SkillBridge
-Handles skill listing, browsing, and search functionality
-"""
-from flask import Blueprint, render_template, request, redirect, session, flash
-from app.auth import login_required, get_db_connection
-import mysql.connector
+from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 
-skills_bp = Blueprint('skills', __name__, url_prefix='/skills')
+from .domain import (
+    build_match_recommendations,
+    create_user_skill_offer,
+    create_user_skill_want,
+    delete_user_skill_offer,
+    delete_user_skill_want,
+    get_or_create_skill,
+    list_browseable_skill_offers,
+    summarize_dashboard,
+)
 
-@skills_bp.route('/my', methods=['GET'])
+skills_bp = Blueprint("skills", __name__, url_prefix="/skills")
+
+@skills_bp.route("/dashboard")
 @login_required
-def my_skills():
-    """Display skills offered and wanted by current user."""
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        
-        cursor.execute('''
-            SELECT * FROM skills
-            WHERE user_id = %s
-            ORDER BY skill_type, created_at DESC
-        ''', (session['user_id'],))
-        
-        skills = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        
-        # Separate offered and wanted skills
-        offered_skills = [s for s in skills if s['skill_type'] == 'offer']
-        wanted_skills = [s for s in skills if s['skill_type'] == 'want']
-        
-        return render_template('skills/my_skills.html', 
-                             offered_skills=offered_skills,
-                             wanted_skills=wanted_skills)
-    except Exception as e:
-        flash(f'An error occurred: {str(e)}', 'danger')
-        return redirect('/dashboard')
+def dashboard():
+    summary = summarize_dashboard(current_user.id)
 
-@skills_bp.route('/add', methods=['POST'])
+    return render_template(
+        "skills/dashboard.html",
+        offered_skills=summary["offered"],
+        wanted_skills=summary["wanted"],
+        metrics=summary["metrics"],
+    )
+
+
+@skills_bp.route("/matches")
 @login_required
-def add_skill():
-    """Add a new skill."""
-    skill_name = request.form.get('skill_name', '').strip()
-    category = request.form.get('category', '').strip()
-    description = request.form.get('description', '').strip()
-    skill_type = request.form.get('skill_type', '').strip()
-    
-    errors = []
-    if not skill_name:
-        errors.append('Skill name is required.')
-    if not category:
-        errors.append('Category is required.')
-    if not skill_type or skill_type not in ['offer', 'want']:
-        errors.append('Valid skill type is required.')
-    if len(description) > 200:
-        errors.append('Description must be 200 characters or less.')
-    
-    if errors:
-        for error in errors:
-            flash(error, 'danger')
-        return redirect('/skills/my')
-    
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            INSERT INTO skills (user_id, skill_name, category, description, skill_type)
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (session['user_id'], skill_name, category, description, skill_type))
-        
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
-        flash('Skill added successfully!', 'success')
-    except Exception as e:
-        flash(f'An error occurred: {str(e)}', 'danger')
-    
-    return redirect('/skills/my')
+def matches():
+    return render_template("skills/matches.html", matches=build_match_recommendations(current_user.id))
 
-@skills_bp.route('/delete/<int:skill_id>', methods=['POST'])
-@login_required
-def delete_skill(skill_id):
-    """Delete a skill."""
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        
-        # Verify skill belongs to current user
-        cursor.execute('SELECT user_id FROM skills WHERE skill_id = %s', (skill_id,))
-        skill = cursor.fetchone()
-        
-        if not skill:
-            cursor.close()
-            conn.close()
-            return 'Skill not found', 404
-        
-        if skill['user_id'] != session['user_id']:
-            cursor.close()
-            conn.close()
-            return 'Unauthorized', 403
-        
-        cursor.execute('DELETE FROM skills WHERE skill_id = %s', (skill_id,))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
-        flash('Skill deleted successfully!', 'success')
-    except Exception as e:
-        flash(f'An error occurred: {str(e)}', 'danger')
-    
-    return redirect('/skills/my')
 
-@skills_bp.route('/browse', methods=['GET'])
+@skills_bp.route("/browse")
 @login_required
 def browse():
-    """Browse and search all skills."""
-    query = request.args.get('q', '').strip()
-    category = request.args.get('category', '').strip()
-    skill_type = request.args.get('type', '').strip()
-    
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        
-        # Build dynamic query
-        sql = '''
-            SELECT s.*, u.alias, u.reputation_score
-            FROM skills s
-            JOIN users u ON s.user_id = u.user_id
-            WHERE s.user_id != %s
-        '''
-        params = [session['user_id']]
-        
-        if query:
-            sql += ' AND (s.skill_name LIKE %s OR s.description LIKE %s)'
-            params.extend([f'%{query}%', f'%{query}%'])
-        
-        if category:
-            sql += ' AND s.category = %s'
-            params.append(category)
-        
-        if skill_type:
-            sql += ' AND s.skill_type = %s'
-            params.append(skill_type)
-        
-        sql += ' ORDER BY s.created_at DESC'
-        
-        cursor.execute(sql, params)
-        skills = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        
-        return render_template('skills/browse.html', skills=skills)
-    except Exception as e:
-        flash(f'An error occurred: {str(e)}', 'danger')
-        return redirect('/dashboard')
+    query = request.args.get("q", "")
+    return render_template(
+        "skills/browse.html",
+        skills=list_browseable_skill_offers(query=query),
+        query=query,
+    )
 
-@skills_bp.route('/<int:skill_id>', methods=['GET'])
+
+@skills_bp.route("/add", methods=["POST"])
 @login_required
-def skill_detail(skill_id):
-    """View detail of a single skill."""
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        
-        cursor.execute('''
-            SELECT s.*, u.alias, u.reputation_score
-            FROM skills s
-            JOIN users u ON s.user_id = u.user_id
-            WHERE s.skill_id = %s
-        ''', (skill_id,))
-        
-        skill = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        if not skill:
-            flash('Skill not found.', 'danger')
-            return redirect('/skills/browse')
-        
-        return render_template('skills/skill_detail.html', skill=skill)
-    except Exception as e:
-        flash(f'An error occurred: {str(e)}', 'danger')
-        return redirect('/skills/browse')
+def add_skill():
+    skill_name = (request.form.get("skill_name") or "").strip()
+    skill_type = request.form.get("skill_type")
+    description = (request.form.get("description") or "").strip() or None
+
+    if not skill_name or skill_type not in {"offer", "want"}:
+        flash("Choose a valid skill name and type.", "danger")
+        return redirect(url_for("skills.dashboard"))
+
+    skill = get_or_create_skill(skill_name, description=description)
+    if not skill:
+        flash("That skill could not be created right now.", "danger")
+        return redirect(url_for("skills.dashboard"))
+
+    if skill_type == "offer":
+        proficiency_level = request.form.get("proficiency_level") or "intermediate"
+        response = create_user_skill_offer(current_user.id, skill["id"], proficiency_level, description)
+    else:
+        priority = request.form.get("priority", type=int) or 1
+        response = create_user_skill_want(current_user.id, skill["id"], priority, description)
+
+    if not response.data:
+        flash("That skill may already exist on your profile.", "warning")
+        return redirect(url_for("skills.dashboard"))
+
+    flash("Skill added successfully.", "success")
+    return redirect(url_for("skills.dashboard"))
+
+
+@skills_bp.route("/delete/<skill_type>/<int:record_id>", methods=["POST"])
+@login_required
+def delete_skill(skill_type, record_id):
+    if skill_type == "offer":
+        response = delete_user_skill_offer(record_id, current_user.id)
+    elif skill_type == "want":
+        response = delete_user_skill_want(record_id, current_user.id)
+    else:
+        flash("Invalid skill type.", "danger")
+        return redirect(url_for("skills.dashboard"))
+
+    if not response.data:
+        flash("That skill could not be removed.", "danger")
+        return redirect(url_for("skills.dashboard"))
+
+    flash("Skill removed from your profile.", "success")
+    return redirect(url_for("skills.dashboard"))

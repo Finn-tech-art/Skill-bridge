@@ -1,0 +1,38 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Close the loop</p>
+        <h1>Leave feedback for this completed exchange.</h1>
+        <p>Reviews strengthen future matching quality and help the next learner know what to expect.</p>
+    </div>
+</section>
+
+<section class="content-card review-card">
+    <h2>Submit Review</h2>
+    <p class="muted">Session between requester #{{ session.requester_id }} and provider #{{ session.provider_id }}.</p>
+
+    <form class="stack-form" method="POST">
+        <label>
+            <span>Rating</span>
+            <select name="rating" required>
+                <option value="">Choose a rating</option>
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Strong</option>
+                <option value="3">3 - Solid</option>
+                <option value="2">2 - Needs improvement</option>
+                <option value="1">1 - Poor</option>
+            </select>
+        </label>
+        <label>
+            <span>Comment</span>
+            <textarea name="comment" rows="5" placeholder="What went well? What could be better next time?"></textarea>
+        </label>
+
+        <button class="btn" type="submit">Submit Review</button>
+    </form>
+</section>
+
+{% endblock %}

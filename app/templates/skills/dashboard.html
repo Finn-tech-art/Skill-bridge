@@ -1,0 +1,146 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<section class="hero-card dashboard-hero">
+    <div>
+        <p class="eyebrow">Your exchange workspace</p>
+        <h1>Keep your offers visible and your learning queue intentional.</h1>
+        <p>Track active sessions, credit health, and the skills that make your profile more matchable.</p>
+    </div>
+
+    <div class="hero-metrics">
+        <div class="metric-tile">
+            <span>{{ metrics.credit_balance }}</span>
+            <small>credit balance</small>
+        </div>
+        <div class="metric-tile">
+            <span>{{ metrics.reputation or "New" }}</span>
+            <small>reputation</small>
+        </div>
+        <div class="metric-tile">
+            <span>{{ metrics.active_sessions }}</span>
+            <small>active sessions</small>
+        </div>
+    </div>
+</section>
+
+<section class="content-card manage-skill-card">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Profile fuel</p>
+            <h2>Add a skill</h2>
+        </div>
+        <p class="muted">The stronger your offers and wants are, the better your matches become.</p>
+    </div>
+
+    <form class="stack-form" method="POST" action="{{ url_for('skills.add_skill') }}">
+        <div class="form-grid">
+            <label>
+                <span>Skill name</span>
+                <input name="skill_name" placeholder="Python tutoring, UI design, public speaking" required>
+            </label>
+            <label>
+                <span>Skill type</span>
+                <select name="skill_type" required>
+                    <option value="offer">I can teach this</option>
+                    <option value="want">I want to learn this</option>
+                </select>
+            </label>
+            <label>
+                <span>Proficiency level for offers</span>
+                <select name="proficiency_level">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate" selected>Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                    <option value="expert">Expert</option>
+                </select>
+            </label>
+            <label>
+                <span>Priority for wants</span>
+                <select name="priority">
+                    <option value="1">1 - Nice to have</option>
+                    <option value="2" selected>2 - Important</option>
+                    <option value="3">3 - High priority</option>
+                </select>
+            </label>
+        </div>
+
+        <label>
+            <span>Description or learning note</span>
+            <textarea name="description" rows="3" placeholder="Add context that improves matching quality."></textarea>
+        </label>
+
+        <button class="btn" type="submit">Add skill</button>
+    </form>
+</section>
+
+<section class="stats-grid">
+    <article class="content-card stat-card">
+        <p class="eyebrow">Supply</p>
+        <h3>{{ metrics.offers_count }}</h3>
+        <p class="muted">Skills you can teach right now.</p>
+    </article>
+    <article class="content-card stat-card">
+        <p class="eyebrow">Demand</p>
+        <h3>{{ metrics.wants_count }}</h3>
+        <p class="muted">Skills you are actively trying to learn.</p>
+    </article>
+    <article class="content-card stat-card">
+        <p class="eyebrow">Throughput</p>
+        <h3>{{ metrics.completed_sessions }}</h3>
+        <p class="muted">Completed sessions contributing to trust and credits.</p>
+    </article>
+</section>
+
+<section class="two-column">
+    <div>
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Teach</p>
+                <h2>Skills you offer</h2>
+            </div>
+        </div>
+
+        {% for skill in offered_skills %}
+            {% set role_label = "You can teach this" %}
+            {% include "components/skill_card.html" %}
+            <form class="inline-form" method="POST" action="{{ url_for('skills.delete_skill', skill_type='offer', record_id=skill.id) }}">
+                <button class="btn btn-ghost" type="submit">Remove</button>
+            </form>
+        {% else %}
+            <article class="content-card empty-state">
+                <h3>No teaching skills listed yet</h3>
+                <p>Add at least one offer so other students can discover you in reciprocal matches.</p>
+            </article>
+        {% endfor %}
+    </div>
+
+    <div>
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Learn</p>
+                <h2>Skills you want</h2>
+            </div>
+            <a class="inline-link" href="{{ url_for('skills.matches') }}">See recommendations</a>
+        </div>
+
+        {% for skill in wanted_skills %}
+            {% set role_label = "You want to learn this" %}
+            {% include "components/skill_card.html" %}
+            <div class="inline-actions">
+                <a class="btn btn-secondary" href="{{ url_for('skills.matches') }}">Find matches</a>
+                <form class="inline-form" method="POST" action="{{ url_for('skills.delete_skill', skill_type='want', record_id=skill.id) }}">
+                    <button class="btn btn-ghost" type="submit">Remove</button>
+                </form>
+            </div>
+        {% else %}
+            <article class="content-card empty-state">
+                <h3>No learning goals added yet</h3>
+                <p>Once you add skills you want to learn, SkillBridge can start ranking relevant partners for you.</p>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

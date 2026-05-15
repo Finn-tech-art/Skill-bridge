@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<section class="hero-card landing-hero">
+    <div class="landing-copy">
+        <p class="eyebrow">SkillBridge for student communities</p>
+        <h1>Swap practical skills, build trust, and learn faster together.</h1>
+        <p>SkillBridge helps students match around real teaching capacity, reciprocal learning goals, and a simple credit model that rewards follow-through.</p>
+        <div class="landing-actions">
+            <a class="btn" href="{{ url_for('auth.register') }}">Create account</a>
+            <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">Login</a>
+        </div>
+    </div>
+
+    <div class="landing-panel">
+        <div class="metric-tile">
+            <span>Direct swap</span>
+            <small>Best when both students can teach each other</small>
+        </div>
+        <div class="metric-tile">
+            <span>Time credit</span>
+            <small>Best when one student teaches and earns exchange value</small>
+        </div>
+        <div class="metric-tile">
+            <span>Double confirmation</span>
+            <small>Credits move only after both sides confirm the session</small>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<section class="hero-card matches-hero">
+    <div>
+        <p class="eyebrow">Smart matching</p>
+        <h1>Choose partners who can teach what you need and benefit from what you already know.</h1>
+        <p>Recommendations now weigh learning priority, provider proficiency, trust signals, and reciprocal swap potential.</p>
+    </div>
+</section>
+
+<section class="stack-list">
+    {% for match in matches %}
+        {% include "components/match_card.html" %}
+    {% else %}
+        <article class="content-card empty-state">
+            <h3>No matches yet</h3>
+            <p>Add some wanted skills to your dashboard and we’ll start surfacing the best exchange candidates here.</p>
+        </article>
+    {% endfor %}
+</section>
+
+{% endblock %}

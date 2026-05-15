@@ -1,0 +1,60 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<section class="hero-card auth-shell">
+    <div class="hero-copy">
+        <p class="eyebrow">Build your exchange profile</p>
+        <h1>Join a network where students teach and learn from each other.</h1>
+        <p>Set up your identity, share what you know, and start building time-credit or direct-swap sessions with confidence.</p>
+    </div>
+
+    <div class="content-card auth-card auth-card--wide">
+        <h2>Create Account</h2>
+
+        <form class="stack-form" method="POST">
+            <div class="form-grid">
+                <label>
+                    <span>Full name</span>
+                    <input name="full_name" placeholder="Jane Njeri" required>
+                </label>
+                <label>
+                    <span>Username</span>
+                    <input name="username" placeholder="jane.codes" required>
+                </label>
+                <label>
+                    <span>Email</span>
+                    <input name="email" type="email" placeholder="you@student.edu" required>
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input name="password" type="password" placeholder="Create a password" required>
+                </label>
+                <label>
+                    <span>Year of study</span>
+                    <select name="year_of_study">
+                        <option value="">Select year</option>
+                        <option value="1">Year 1</option>
+                        <option value="2">Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                        <option value="5">Year 5+</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Department</span>
+                    <input name="department" placeholder="Computer Science">
+                </label>
+            </div>
+
+            <label>
+                <span>Bio</span>
+                <textarea name="bio" rows="4" placeholder="What do you enjoy teaching, and what are you hoping to learn?"></textarea>
+            </label>
+
+            <button class="btn" type="submit">Register</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

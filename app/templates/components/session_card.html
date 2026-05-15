@@ -1,0 +1,75 @@
+<article class="content-card session-card">
+    <div class="session-card__header">
+        <div>
+            <p class="eyebrow">{{ "You requested this" if session.is_requester else "You are the provider" }}</p>
+            <h3>{{ session.provider_skill_name }}</h3>
+            <p class="muted">
+                {{ session.requester_name }} ↔ {{ session.provider_name }}
+            </p>
+        </div>
+        <span class="status-pill status-{{ session.status }}">{{ session.status | replace("_", " ") | title }}</span>
+    </div>
+
+    <div class="session-card__grid">
+        <div>
+            <span class="section-label">Exchange type</span>
+            <p>{{ session.exchange_type | replace("_", " ") | title }}</p>
+        </div>
+        <div>
+            <span class="section-label">Duration</span>
+            <p>{{ session.duration_minutes }} minutes</p>
+        </div>
+        <div>
+            <span class="section-label">Counterpart</span>
+            <p>{{ session.counterpart.full_name or "Unknown user" }}</p>
+        </div>
+        <div>
+            <span class="section-label">What you offer</span>
+            <p>{{ session.requester_skill_name if session.requester_skill_id else "Time credit only" }}</p>
+        </div>
+    </div>
+
+    {% if session.requester_notes %}
+        <div class="session-note">
+            <span class="section-label">Request note</span>
+            <p>{{ session.requester_notes }}</p>
+        </div>
+    {% endif %}
+
+    {% if session.status == "accepted" %}
+        <div class="confirmation-row">
+            <span class="{{ 'confirmed' if session.requester_confirmed else '' }}">Requester confirmed</span>
+            <span class="{{ 'confirmed' if session.provider_confirmed else '' }}">Provider confirmed</span>
+        </div>
+    {% endif %}
+
+    <div class="actions-row">
+        {% if session.status == "pending" and not session.is_requester %}
+            <form method="POST" action="{{ url_for('exchange.update_session_status', session_id=session.id) }}">
+                <input type="hidden" name="status" value="accepted">
+                <button class="btn" type="submit">Accept</button>
+            </form>
+            <form method="POST" action="{{ url_for('exchange.update_session_status', session_id=session.id) }}">
+                <input type="hidden" name="status" value="rejected">
+                <button class="btn btn-secondary" type="submit">Reject</button>
+            </form>
+        {% endif %}
+
+        {% if session.status in ["pending", "accepted"] %}
+            <form method="POST" action="{{ url_for('exchange.update_session_status', session_id=session.id) }}">
+                <input type="hidden" name="status" value="cancelled">
+                <button class="btn btn-ghost" type="submit">Cancel</button>
+            </form>
+        {% endif %}
+
+        {% if session.awaiting_user_confirmation %}
+            <form method="POST" action="{{ url_for('exchange.confirm_session', session_id=session.id) }}">
+                <button class="btn" type="submit">Confirm completion</button>
+            </form>
+        {% endif %}
+
+        {% if session.can_review %}
+            <a class="btn" href="{{ url_for('feedback.submit_review', session_id=session.id) }}">Leave review</a>
+        {% endif %}
+    </div>
+</article>

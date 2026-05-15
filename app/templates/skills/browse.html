@@ -1,0 +1,54 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Discovery</p>
+        <h1>Browse the skills other students are ready to teach.</h1>
+        <p>Use this view to validate supply, discover gaps in the catalogue, and understand what kind of expertise is already active on the platform.</p>
+    </div>
+</section>
+
+<section class="content-card">
+    <form class="stack-form" method="GET">
+        <div class="form-grid">
+            <label>
+                <span>Search the active offers</span>
+                <input type="text" name="q" placeholder="Search by skill, teacher, or department" value="{{ query }}">
+            </label>
+            <div class="browse-actions">
+                <button type="submit" class="btn">Search</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+<section class="stack-list">
+    {% if skills %}
+        {% for skill in skills %}
+            <article class="content-card">
+                <div class="match-card__top">
+                    <div>
+                        <p class="eyebrow">Available teacher</p>
+                        <h3>{{ skill.skill_name }}</h3>
+                        <p class="muted">{{ skill.provider.full_name }}{% if skill.provider.department %} · {{ skill.provider.department }}{% endif %}</p>
+                    </div>
+                    <span class="pill">{{ skill.proficiency_level | title }}</span>
+                </div>
+                <p>{{ skill.offer_description or skill.skill_description or "No description yet." }}</p>
+                <div class="tag-row">
+                    {% if skill.is_verified %}
+                        <span class="tag">Verified</span>
+                    {% endif %}
+                    <span class="tag tag-accent">Reputation {{ skill.reputation or "New" }}</span>
+                </div>
+            </article>
+        {% endfor %}
+    {% else %}
+        <article class="content-card empty-state">
+            <h3>No skills found</h3>
+            <p>Try a broader keyword or seed a few skill offers from the dashboard first.</p>
+        </article>
+    {% endif %}
+</section>
+{% endblock %}

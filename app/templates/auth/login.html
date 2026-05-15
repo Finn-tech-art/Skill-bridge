@@ -1,0 +1,32 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<section class="hero-card auth-shell">
+    <div class="hero-copy">
+        <p class="eyebrow">Campus skill exchange</p>
+        <h1>Return to your learning marketplace.</h1>
+        <p>Pick up where you left off, review your matches, and turn idle skills into practical exchange sessions.</p>
+    </div>
+
+    <div class="content-card auth-card">
+        <h2>Login</h2>
+
+        <form class="stack-form" method="POST">
+            <label>
+                <span>Email</span>
+                <input name="email" type="email" placeholder="you@student.edu" required>
+            </label>
+            <label>
+                <span>Password</span>
+                <input name="password" type="password" placeholder="Enter your password" required>
+            </label>
+
+            <button class="btn" type="submit">Login</button>
+        </form>
+
+        <p class="muted">New here? <a href="{{ url_for('auth.register') }}">Create an account</a>.</p>
+    </div>
+</section>
+
+{% endblock %}
