@@ -115,6 +115,40 @@ a {
     padding: 1.5rem 0 3.5rem;
 }
 
+.site-footer {
+    border-top: 1px solid #e4e9df;
+    background: #fbfcfa;
+    margin-top: 2rem;
+}
+
+.footer-grid {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 1.5rem 0 2rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 1rem;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: #33442d;
+    font-weight: 600;
+}
+
+.footer-links--stack {
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .hero-card,
 .content-card {
     background: var(--surface);
@@ -173,6 +207,35 @@ a {
 .landing-panel {
     display: grid;
     gap: 1rem;
+}
+
+.trust-strip,
+.trust-list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.trust-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.trust-strip span,
+.trust-item {
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    background: #f7fbf4;
+    border: 1px solid #e3e8dd;
+}
+
+.trust-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.auth-meta {
+    color: var(--muted);
+    font-size: 0.9rem;
 }
 
 .metric-tile,
@@ -524,7 +587,9 @@ th {
     .stats-grid,
     .form-grid,
     .match-card__insights,
-    .session-card__grid {
+    .session-card__grid,
+    .trust-strip,
+    .footer-grid {
         grid-template-columns: 1fr;
     }
 
@@ -543,6 +608,10 @@ th {
     .review-card {
         max-width: none;
         justify-self: stretch;
+    }
+
+    .footer-links {
+        justify-content: flex-start;
     }
 }
 

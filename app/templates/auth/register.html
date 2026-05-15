@@ -4,9 +4,23 @@
 
 <section class="hero-card auth-shell">
     <div class="hero-copy">
-        <p class="eyebrow">Build your exchange profile</p>
-        <h1>Join a network where students teach and learn from each other.</h1>
-        <p>Set up your identity, share what you know, and start building time-credit or direct-swap sessions with confidence.</p>
+        <p class="eyebrow">Create your SkillBridge account</p>
+        <h1>Join a student marketplace for practical peer learning.</h1>
+        <p>Create an account to publish skills, discover learning partners, and participate in direct-swap or time-credit sessions with a transparent confirmation flow.</p>
+        <div class="trust-list">
+            <div class="trust-item">
+                <strong>What happens after signup</strong>
+                <span>Your account is created with Supabase Auth and linked to your SkillBridge profile.</span>
+            </div>
+            <div class="trust-item">
+                <strong>Starter balance</strong>
+                <span>New accounts receive 100 welcome credits in the platform ledger.</span>
+            </div>
+            <div class="trust-item">
+                <strong>Before you continue</strong>
+                <span>Read our <a href="{{ url_for('test.terms') }}">Terms</a> and <a href="{{ url_for('test.privacy') }}">Privacy Policy</a>.</span>
+            </div>
+        </div>
     </div>
 
     <div class="content-card auth-card auth-card--wide">
@@ -54,6 +68,7 @@
 
             <button class="btn" type="submit">Register</button>
         </form>
+        <p class="auth-meta">By creating an account, you agree to the platform terms and acknowledge the privacy policy.</p>
     </div>
 </section>
 

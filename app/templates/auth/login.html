@@ -4,9 +4,23 @@
 
 <section class="hero-card auth-shell">
     <div class="hero-copy">
-        <p class="eyebrow">Campus skill exchange</p>
-        <h1>Return to your learning marketplace.</h1>
-        <p>Pick up where you left off, review your matches, and turn idle skills into practical exchange sessions.</p>
+        <p class="eyebrow">Secure account access</p>
+        <h1>Sign in to your SkillBridge account.</h1>
+        <p>Access your student profile, exchange sessions, match recommendations, and credit history. SkillBridge uses Supabase-managed email and password authentication for account access.</p>
+        <div class="trust-list">
+            <div class="trust-item">
+                <strong>Why you are signing in</strong>
+                <span>To manage your personal profile, sessions, and credit ledger.</span>
+            </div>
+            <div class="trust-item">
+                <strong>What credentials are used for</strong>
+                <span>Your email and password are used only to authenticate your SkillBridge account.</span>
+            </div>
+            <div class="trust-item">
+                <strong>Need more context?</strong>
+                <span>Review our <a href="{{ url_for('test.about') }}">About</a>, <a href="{{ url_for('test.privacy') }}">Privacy</a>, and <a href="{{ url_for('test.contact') }}">Contact</a> pages.</span>
+            </div>
+        </div>
     </div>
 
     <div class="content-card auth-card">
@@ -26,6 +40,7 @@
         </form>
 
         <p class="muted">New here? <a href="{{ url_for('auth.register') }}">Create an account</a>.</p>
+        <p class="auth-meta">By signing in, you are accessing your SkillBridge account on this domain only.</p>
     </div>
 </section>
 

@@ -33,6 +33,8 @@
                 <a class="nav-cta" href="{{ url_for('auth.logout') }}">Logout</a>
             {% else %}
                 <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('test.about') }}">About</a>
+                <a href="{{ url_for('test.contact') }}">Contact</a>
                 <a class="nav-cta" href="{{ url_for('auth.register') }}">Create account</a>
             {% endif %}
         </nav>
@@ -42,6 +44,21 @@
         {% include "components/flash_message.html" %}
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div>
+                <strong>SkillBridge</strong>
+                <p class="muted">A student skill-exchange marketplace focused on peer learning, transparent credits, and accountable sessions.</p>
+            </div>
+            <div class="footer-links">
+                <a href="{{ url_for('test.about') }}">About</a>
+                <a href="{{ url_for('test.contact') }}">Contact</a>
+                <a href="{{ url_for('test.privacy') }}">Privacy</a>
+                <a href="{{ url_for('test.terms') }}">Terms</a>
+            </div>
+        </div>
+    </footer>
 </div>
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>

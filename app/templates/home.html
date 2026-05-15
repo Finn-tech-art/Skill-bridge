@@ -3,28 +3,70 @@
 {% block content %}
 <section class="hero-card landing-hero">
     <div class="landing-copy">
-        <p class="eyebrow">SkillBridge for student communities</p>
-        <h1>Swap practical skills, build trust, and learn faster together.</h1>
-        <p>SkillBridge helps students match around real teaching capacity, reciprocal learning goals, and a simple credit model that rewards follow-through.</p>
+        <p class="eyebrow">Student marketplace for peer learning</p>
+        <h1>Exchange real skills with verified campus peers.</h1>
+        <p>SkillBridge helps students teach what they know, discover trusted learning partners, and manage direct-swap or time-credit sessions in one shared platform.</p>
         <div class="landing-actions">
             <a class="btn" href="{{ url_for('auth.register') }}">Create account</a>
             <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">Login</a>
+        </div>
+        <div class="trust-strip">
+            <span>Student profiles</span>
+            <span>Session confirmations</span>
+            <span>Transparent credit ledger</span>
         </div>
     </div>
 
     <div class="landing-panel">
         <div class="metric-tile">
-            <span>Direct swap</span>
-            <small>Best when both students can teach each other</small>
+            <span>Direct swap sessions</span>
+            <small>Best when both students can teach each other and exchange value directly.</small>
         </div>
         <div class="metric-tile">
-            <span>Time credit</span>
-            <small>Best when one student teaches and earns exchange value</small>
+            <span>Time-credit model</span>
+            <small>Best when one student teaches and earns credits for future learning.</small>
         </div>
         <div class="metric-tile">
             <span>Double confirmation</span>
-            <small>Credits move only after both sides confirm the session</small>
+            <small>Credits only move after both participants confirm the exchange was completed.</small>
         </div>
     </div>
+</section>
+
+<section class="stats-grid">
+    <article class="content-card stat-card">
+        <p class="eyebrow">How it works</p>
+        <h3>Publish</h3>
+        <p class="muted">List the skills you can teach and the skills you want to learn.</p>
+    </article>
+    <article class="content-card stat-card">
+        <p class="eyebrow">How it works</p>
+        <h3>Match</h3>
+        <p class="muted">Review ranked partners based on overlap, reputation, and reciprocal value.</p>
+    </article>
+    <article class="content-card stat-card">
+        <p class="eyebrow">How it works</p>
+        <h3>Confirm</h3>
+        <p class="muted">Close the loop with reviews and credit updates only after both sides confirm.</p>
+    </article>
+</section>
+
+<section class="two-column">
+    <article class="content-card">
+        <p class="eyebrow">Who SkillBridge serves</p>
+        <h2>Built for real campus learning exchanges</h2>
+        <p>SkillBridge is intended for student communities that want a structured, transparent way to coordinate peer tutoring, coaching, creative help, technical support, and knowledge sharing.</p>
+        <a class="inline-link" href="{{ url_for('test.about') }}">Learn more about the platform</a>
+    </article>
+    <article class="content-card">
+        <p class="eyebrow">Trust and safety</p>
+        <h2>Clear policies and accountable sessions</h2>
+        <p>We separate public product information from authentication flows so students can understand the platform before they ever enter credentials.</p>
+        <div class="footer-links footer-links--stack">
+            <a href="{{ url_for('test.privacy') }}">Privacy Policy</a>
+            <a href="{{ url_for('test.terms') }}">Terms of Use</a>
+            <a href="{{ url_for('test.contact') }}">Contact</a>
+        </div>
+    </article>
 </section>
 {% endblock %}
