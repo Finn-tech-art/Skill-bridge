@@ -75,6 +75,10 @@ def store_supabase_session_tokens(auth_session, auth_user_id):
     session["sb_auth_user_id"] = auth_user_id
 
 
+def current_app_base_url():
+    return request.host_url.rstrip("/")
+
+
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -218,6 +222,71 @@ def login():
         flash("Invalid email or password.", "danger")
 
     return render_template("auth/login.html")
+
+
+@auth_bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for("skills.dashboard"))
+
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        if not email:
+            flash("Enter the email address tied to your SkillBridge account.", "danger")
+            return redirect(url_for("auth.forgot_password"))
+
+        auth_client = create_supabase_client()
+        try:
+            auth_client.auth.reset_password_for_email(
+                email,
+                {"redirect_to": f"{current_app_base_url()}{url_for('auth.reset_password')}"},
+            )
+        except Exception as exc:
+            flash(str(exc), "danger")
+            return redirect(url_for("auth.forgot_password"))
+
+        flash("If that email exists, a reset link has been sent. Use the newest email you receive.", "success")
+        return redirect(url_for("auth.login"))
+
+    return render_template("auth/forgot_password.html")
+
+
+@auth_bp.route("/reset-password", methods=["GET", "POST"])
+def reset_password():
+    if request.method == "POST":
+        access_token = request.form.get("access_token")
+        refresh_token = request.form.get("refresh_token")
+        new_password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if not access_token or not refresh_token:
+            flash("The password reset link is incomplete or expired. Request a new recovery email.", "danger")
+            return redirect(url_for("auth.forgot_password"))
+
+        if not new_password:
+            flash("Enter a new password.", "danger")
+            return redirect(url_for("auth.reset_password"))
+
+        if new_password != confirm_password:
+            flash("The password confirmation does not match.", "danger")
+            return redirect(url_for("auth.reset_password"))
+
+        auth_client = create_supabase_client()
+        try:
+            auth_client.auth.set_session(access_token, refresh_token)
+            auth_client.auth.update_user({"password": new_password})
+            auth_client.auth.sign_out()
+        except Exception as exc:
+            flash(str(exc), "danger")
+            return redirect(url_for("auth.forgot_password"))
+
+        session.pop("sb_access_token", None)
+        session.pop("sb_refresh_token", None)
+        session.pop("sb_auth_user_id", None)
+        flash("Your password has been updated. You can now log in with the new password.", "success")
+        return redirect(url_for("auth.login"))
+
+    return render_template("auth/reset_password.html")
 
 
 @auth_bp.route("/logout")

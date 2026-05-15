@@ -7,6 +7,9 @@
         <p class="eyebrow">Secure account access</p>
         <h1>Sign in to your SkillBridge account.</h1>
         <p>Access your student profile, exchange sessions, match recommendations, and credit history. SkillBridge uses Supabase-managed email and password authentication for account access.</p>
+        <div class="hero-media">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" alt="Students collaborating around a laptop">
+        </div>
         <div class="trust-list">
             <div class="trust-item">
                 <strong>Why you are signing in</strong>
@@ -39,7 +42,10 @@
             <button class="btn" type="submit">Login</button>
         </form>
 
-        <p class="muted">New here? <a href="{{ url_for('auth.register') }}">Create an account</a>.</p>
+        <div class="auth-links">
+            <p class="muted">New here? <a href="{{ url_for('auth.register') }}">Create an account</a>.</p>
+            <p class="muted"><a href="{{ url_for('auth.forgot_password') }}">Forgot your password?</a></p>
+        </div>
         <p class="auth-meta">By signing in, you are accessing your SkillBridge account on this domain only.</p>
     </div>
 </section>

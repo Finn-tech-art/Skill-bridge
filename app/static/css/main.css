@@ -189,6 +189,25 @@ a {
     line-height: 1.6;
 }
 
+.hero-media {
+    margin: 1rem 0 0.75rem;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #dfe7d9;
+    box-shadow: var(--shadow);
+}
+
+.hero-media img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+}
+
+.hero-media--wide img {
+    height: 210px;
+}
+
 .eyebrow,
 .section-label {
     text-transform: uppercase;
@@ -238,12 +257,35 @@ a {
     font-size: 0.9rem;
 }
 
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .metric-tile,
 .insight-box {
     padding: 1rem 1.1rem;
     border-radius: 18px;
     background: #fbfdf9;
     border: 1px solid #e3e8dd;
+}
+
+.icon-chip {
+    width: 2.7rem;
+    height: 2.7rem;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+    margin-bottom: 0.8rem;
+}
+
+.icon-chip svg {
+    width: 1.2rem;
+    height: 1.2rem;
 }
 
 .metric-tile span,
