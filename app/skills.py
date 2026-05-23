@@ -7,6 +7,7 @@ from .domain import (
     create_user_skill_want,
     delete_user_skill_offer,
     delete_user_skill_want,
+    get_public_provider_profile,
     get_or_create_skill,
     list_browseable_skill_offers,
     summarize_dashboard,
@@ -42,6 +43,17 @@ def browse():
         skills=list_browseable_skill_offers(query=query),
         query=query,
     )
+
+
+@skills_bp.route("/provider/<int:user_id>")
+@login_required
+def provider_profile(user_id):
+    profile = get_public_provider_profile(user_id)
+    if not profile:
+        flash("That teacher profile could not be found.", "danger")
+        return redirect(url_for("skills.browse"))
+
+    return render_template("skills/provider_profile.html", profile=profile)
 
 
 @skills_bp.route("/add", methods=["POST"])

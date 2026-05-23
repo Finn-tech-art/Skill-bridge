@@ -64,6 +64,30 @@
             <textarea name="bio" rows="5" placeholder="Share what you enjoy teaching and what kind of exchanges you prefer.">{{ user.bio or '' }}</textarea>
         </label>
 
+        <div class="form-grid">
+            <label>
+                <span>Preferred contact method after matching</span>
+                <select name="preferred_contact_method">
+                    <option value="">Select one</option>
+                    <option value="phone" {% if user.preferred_contact_method == "phone" %}selected{% endif %}>Phone</option>
+                    <option value="email" {% if user.preferred_contact_method == "email" %}selected{% endif %}>Email</option>
+                    <option value="instagram" {% if user.preferred_contact_method == "instagram" %}selected{% endif %}>Instagram</option>
+                </select>
+            </label>
+            <label>
+                <span>Phone number</span>
+                <input type="text" name="contact_phone" value="{{ user.contact_phone or '' }}" placeholder="+254...">
+            </label>
+            <label>
+                <span>Contact email</span>
+                <input type="email" name="contact_email" value="{{ user.contact_email or '' }}" placeholder="alt-contact@example.com">
+            </label>
+            <label>
+                <span>Instagram handle</span>
+                <input type="text" name="instagram_handle" value="{{ user.instagram_handle or '' }}" placeholder="yourhandle">
+            </label>
+        </div>
+
         <button class="btn" type="submit">Save changes</button>
     </form>
 </section>

@@ -330,9 +330,29 @@ def edit_profile():
     department = (request.form.get("department") or "").strip() or None
     bio = (request.form.get("bio") or "").strip() or None
     year_of_study = request.form.get("year_of_study", type=int)
+    preferred_contact_method = request.form.get("preferred_contact_method") or None
+    contact_phone = (request.form.get("contact_phone") or "").strip() or None
+    contact_email = (request.form.get("contact_email") or "").strip().lower() or None
+    instagram_handle = (request.form.get("instagram_handle") or "").strip().lstrip("@") or None
 
     if not full_name:
         flash("Full name is required.", "danger")
+        return redirect(url_for("auth.profile"))
+
+    if preferred_contact_method not in {None, "phone", "email", "instagram", ""}:
+        flash("Choose a valid preferred contact method.", "danger")
+        return redirect(url_for("auth.profile"))
+
+    if preferred_contact_method == "phone" and not contact_phone:
+        flash("Add a phone number if phone is your preferred contact method.", "danger")
+        return redirect(url_for("auth.profile"))
+
+    if preferred_contact_method == "email" and not contact_email:
+        flash("Add a contact email if email is your preferred contact method.", "danger")
+        return redirect(url_for("auth.profile"))
+
+    if preferred_contact_method == "instagram" and not instagram_handle:
+        flash("Add an Instagram handle if Instagram is your preferred contact method.", "danger")
         return redirect(url_for("auth.profile"))
 
     response = update_user_profile(
@@ -342,6 +362,10 @@ def edit_profile():
             "department": department,
             "bio": bio,
             "year_of_study": year_of_study,
+            "preferred_contact_method": preferred_contact_method or None,
+            "contact_phone": contact_phone,
+            "contact_email": contact_email,
+            "instagram_handle": instagram_handle,
         },
     )
     if not response.data:

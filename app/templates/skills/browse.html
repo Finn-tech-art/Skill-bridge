@@ -41,7 +41,15 @@
                         <span class="tag">Verified</span>
                     {% endif %}
                     <span class="tag tag-accent">Reputation {{ skill.reputation or "New" }}</span>
+                    <span class="tag">{{ skill.review_count }} reviews</span>
                 </div>
+                {% if skill.latest_review and skill.latest_review.comment %}
+                    <div class="session-note">
+                        <span class="section-label">Recent public review</span>
+                        <p>{{ skill.latest_review.comment }}</p>
+                    </div>
+                {% endif %}
+                <a class="btn btn-secondary" href="{{ url_for('skills.provider_profile', user_id=skill.provider.id) }}">View teacher profile</a>
             </article>
         {% endfor %}
     {% else %}

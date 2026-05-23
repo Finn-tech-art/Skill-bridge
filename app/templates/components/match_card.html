@@ -11,6 +11,13 @@
         </div>
     </div>
 
+    {% if match.preferred_contact_method and match.preferred_contact_value %}
+        <div class="session-note">
+            <span class="section-label">Preferred pre-session contact</span>
+            <p>{{ match.preferred_contact_method | title }}: {{ match.preferred_contact_value }}</p>
+        </div>
+    {% endif %}
+
     <div class="match-card__insights">
         <div class="insight-box">
             <strong>{{ match.matched_skills | length }}</strong>
@@ -87,11 +94,7 @@
 
             <label>
                 <span>Expected duration</span>
-                <select name="duration_minutes">
-                    <option value="45">45 minutes</option>
-                    <option value="60" selected>60 minutes</option>
-                    <option value="90">90 minutes</option>
-                </select>
+                <input name="duration_minutes" type="number" min="15" step="15" value="60" placeholder="Enter minutes">
             </label>
         </div>
 

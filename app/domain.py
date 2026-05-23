@@ -88,6 +88,17 @@ def list_reviews_for_users(user_ids):
     return response.data or []
 
 
+def get_reviews_for_user(user_id):
+    response = (
+        supabase.table("reviews")
+        .select("*")
+        .eq("reviewee_id", user_id)
+        .order("created_at", desc=True)
+        .execute()
+    )
+    return response.data or []
+
+
 def get_reputation_map(user_ids):
     ratings_by_user = defaultdict(list)
     for review in list_reviews_for_users(user_ids):
@@ -184,6 +195,20 @@ def summarize_dashboard(user_id):
             "completed_sessions": status_counts["completed"],
         },
     }
+
+
+def format_contact_value(user):
+    method = user.get("preferred_contact_method")
+    if method == "phone":
+        return user.get("contact_phone")
+    if method == "email":
+        return user.get("contact_email") or user.get("email")
+    if method == "instagram":
+        handle = user.get("instagram_handle")
+        if handle and not handle.startswith("@"):
+            return f"@{handle}"
+        return handle
+    return None
 
 
 def build_match_recommendations(user_id):
@@ -300,6 +325,8 @@ def build_match_recommendations(user_id):
             "recommended_exchange_type": data["recommended_exchange_type"],
             "provider_credit_balance": get_credit_balance(provider_id),
             "provider_reputation": reputations.get(provider_id),
+            "preferred_contact_method": provider.get("preferred_contact_method"),
+            "preferred_contact_value": format_contact_value(provider),
         })
 
     results.sort(
@@ -432,6 +459,9 @@ def list_browseable_skill_offers(query=None):
     users = fetch_users_by_ids([offer["user_id"] for offer in offers])
     skills = fetch_skills_by_ids([offer["skill_id"] for offer in offers])
     reputations = get_reputation_map(users.keys())
+    reviews_by_user = defaultdict(list)
+    for review in list_reviews_for_users(users.keys()):
+        reviews_by_user[review["reviewee_id"]].append(review)
 
     results = []
     needle = (query or "").strip().lower()
@@ -461,6 +491,8 @@ def list_browseable_skill_offers(query=None):
             "proficiency_level": offer.get("proficiency_level"),
             "is_verified": offer.get("is_verified", False),
             "reputation": reputations.get(offer["user_id"]),
+            "review_count": len(reviews_by_user.get(offer["user_id"], [])),
+            "latest_review": (reviews_by_user.get(offer["user_id"], [None])[0]),
         })
 
     results.sort(
@@ -471,6 +503,36 @@ def list_browseable_skill_offers(query=None):
         )
     )
     return results
+
+
+def get_public_provider_profile(user_id):
+    user = get_user_by_id(user_id)
+    if not user:
+        return None
+
+    offered = enrich_skill_records(get_user_skill_offers(user_id), "offer")
+    wanted = enrich_skill_records(get_user_skill_wants(user_id), "want")
+    reviews = get_reviews_for_user(user_id)
+    reviewer_map = fetch_users_by_ids([review["reviewer_id"] for review in reviews])
+
+    enriched_reviews = []
+    for review in reviews:
+        reviewer = reviewer_map.get(review["reviewer_id"], {})
+        enriched_reviews.append({
+            **review,
+            "reviewer_name": reviewer.get("full_name", "Anonymous reviewer"),
+            "reviewer_username": reviewer.get("username"),
+        })
+
+    return {
+        "user": user,
+        "offered": offered,
+        "wanted": wanted,
+        "reviews": enriched_reviews,
+        "review_count": len(enriched_reviews),
+        "reputation": get_reputation_map([user_id]).get(user_id),
+        "preferred_contact_value": format_contact_value(user),
+    }
 
 
 def create_credit_transaction(user_id, session_id, amount, transaction_type, reference_note):

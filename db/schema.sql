@@ -17,6 +17,12 @@ CREATE TABLE users (
     department VARCHAR(150),
     bio TEXT,
     avatar_url VARCHAR(255),
+    preferred_contact_method TEXT CHECK (
+        preferred_contact_method IN ('phone', 'email', 'instagram')
+    ),
+    contact_phone VARCHAR(30),
+    contact_email VARCHAR(255),
+    instagram_handle VARCHAR(100),
 
     is_active BOOLEAN DEFAULT TRUE,
 

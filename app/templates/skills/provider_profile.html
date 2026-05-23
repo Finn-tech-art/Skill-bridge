@@ -1,0 +1,84 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">Teacher profile</p>
+        <h1>{{ profile.user.full_name }}</h1>
+        <p>
+            {% if profile.user.department %}{{ profile.user.department }}{% endif %}
+            {% if profile.user.year_of_study %} · Year {{ profile.user.year_of_study }}{% endif %}
+        </p>
+        <p>{{ profile.user.bio or "This teacher has not added a bio yet." }}</p>
+        {% if profile.user.preferred_contact_method and profile.preferred_contact_value %}
+            <div class="session-note">
+                <span class="section-label">Preferred contact after matching</span>
+                <p>{{ profile.user.preferred_contact_method | title }}: {{ profile.preferred_contact_value }}</p>
+            </div>
+        {% endif %}
+    </div>
+    <div class="hero-metrics">
+        <div class="metric-tile">
+            <span>{{ profile.reputation or "New" }}</span>
+            <small>public reputation</small>
+        </div>
+        <div class="metric-tile">
+            <span>{{ profile.review_count }}</span>
+            <small>written reviews</small>
+        </div>
+        <div class="metric-tile">
+            <span>{{ profile.offered | length }}</span>
+            <small>skills offered</small>
+        </div>
+    </div>
+</section>
+
+<section class="two-column">
+    <div>
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Offered skills</p>
+                <h2>What this teacher can help with</h2>
+            </div>
+        </div>
+        {% for skill in profile.offered %}
+            {% set role_label = "Offered skill" %}
+            {% include "components/skill_card.html" %}
+        {% else %}
+            <article class="content-card empty-state">
+                <h3>No offered skills listed</h3>
+                <p>This user has not published any teaching skills yet.</p>
+            </article>
+        {% endfor %}
+    </div>
+
+    <div>
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Public reviews</p>
+                <h2>What learners have said</h2>
+            </div>
+        </div>
+        {% for review in profile.reviews %}
+            <article class="content-card">
+                <div class="match-card__top">
+                    <div>
+                        <h3>{{ review.rating }}/5</h3>
+                        <p class="muted">
+                            {{ review.reviewer_name }}
+                            {% if review.reviewer_username %} · @{{ review.reviewer_username }}{% endif %}
+                        </p>
+                    </div>
+                    <span class="pill">{{ review.created_at[:10] }}</span>
+                </div>
+                <p>{{ review.comment or "No written comment was provided for this review." }}</p>
+            </article>
+        {% else %}
+            <article class="content-card empty-state">
+                <h3>No reviews yet</h3>
+                <p>Public written reviews will appear here after completed sessions.</p>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
