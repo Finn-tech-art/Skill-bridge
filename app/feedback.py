@@ -39,6 +39,9 @@ def submit_review(session_id):
 
         rating = request.form.get("rating", type=int)
         comment = (request.form.get("comment") or "").strip()
+        current_user_id = str(current_user.id)
+        requester_id = str(session["requester_id"])
+        provider_id = str(session["provider_id"])
 
         if not rating or rating < 1 or rating > 5:
             flash("Please provide a rating between 1 and 5.", "danger")
@@ -47,7 +50,7 @@ def submit_review(session_id):
         # --------------------------------------------------------
         # DETERMINE WHO IS BEING REVIEWED
         # --------------------------------------------------------
-        if session["requester_id"] == current_user.id:
+        if requester_id == current_user_id:
             reviewee_id = session["provider_id"]
         else:
             reviewee_id = session["requester_id"]
@@ -57,14 +60,18 @@ def submit_review(session_id):
         # --------------------------------------------------------
         review_data = {
             "session_id": session_id,
-            "reviewer_id": current_user.id,
+            "reviewer_id": int(current_user_id),
             "reviewee_id": reviewee_id,
             "rating": rating,
             "comment": comment,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        response = supabase.table("reviews").insert(review_data).execute()
+        try:
+            response = supabase.table("reviews").insert(review_data).execute()
+        except Exception:
+            flash("Review could not be submitted. You may already have reviewed this session.", "danger")
+            return redirect(url_for("exchange.sessions"))
 
         if not response.data:
             flash("Review could not be submitted. You may already have reviewed this session.", "danger")
